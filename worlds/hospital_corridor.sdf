@@ -1,0 +1,267 @@
+<?xml version="1.0" ?>
+<sdf version="1.8">
+  <world name="hospital_corridor">
+
+    <plugin filename="gz-sim-physics-system" name="gz::sim::systems::Physics"/>
+    <plugin filename="gz-sim-scene-broadcaster-system" name="gz::sim::systems::SceneBroadcaster"/>
+    <plugin filename="gz-sim-user-commands-system" name="gz::sim::systems::UserCommands"/>
+    <plugin filename="gz-sim-sensors-system" name="gz::sim::systems::Sensors">
+      <render_engine>ogre</render_engine>
+    </plugin>
+
+    <scene>
+      <ambient>1.0 1.0 1.0 1.0</ambient>
+      <background>0.8 0.9 1.0 1.0</background>
+      <shadows>false</shadows>
+    </scene>
+
+    <light type="directional" name="sun">
+      <cast_shadows>false</cast_shadows>
+      <pose>0 0 10 0 0 0</pose>
+      <diffuse>1.0 1.0 1.0 1</diffuse>
+      <specular>0.3 0.3 0.3 1</specular>
+      <direction>0 0 -1</direction>
+    </light>
+
+    <!-- FLOOR -->
+    <model name="ground_plane">
+      <static>true</static>
+      <link name="link">
+        <collision name="collision">
+          <geometry><plane><normal>0 0 1</normal><size>50 50</size></plane></geometry>
+        </collision>
+        <visual name="visual">
+          <geometry><plane><normal>0 0 1</normal><size>50 50</size></plane></geometry>
+          <material><ambient>0.95 0.95 0.95 1</ambient><diffuse>0.95 0.95 0.95 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- ========== MAIN CORRIDOR (horizontal) ========== -->
+    <!-- Left wall -->
+    <model name="main_wall_left">
+      <static>true</static>
+      <pose>0 -4 1 0 0 0</pose>
+      <link name="link">
+        <collision name="collision"><geometry><box><size>20 0.2 2</size></box></geometry></collision>
+        <visual name="visual">
+          <geometry><box><size>20 0.2 2</size></box></geometry>
+          <material><ambient>0.9 0.9 0.85 1</ambient><diffuse>0.9 0.9 0.85 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- Right wall -->
+    <model name="main_wall_right">
+      <static>true</static>
+      <pose>0 4 1 0 0 0</pose>
+      <link name="link">
+        <collision name="collision"><geometry><box><size>20 0.2 2</size></box></geometry></collision>
+        <visual name="visual">
+          <geometry><box><size>20 0.2 2</size></box></geometry>
+          <material><ambient>0.9 0.9 0.85 1</ambient><diffuse>0.9 0.9 0.85 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- End wall -->
+    <model name="main_wall_end">
+      <static>true</static>
+      <pose>10 0 1 0 0 0</pose>
+      <link name="link">
+        <collision name="collision"><geometry><box><size>0.2 8.2 2</size></box></geometry></collision>
+        <visual name="visual">
+          <geometry><box><size>0.2 8.2 2</size></box></geometry>
+          <material><ambient>0.9 0.9 0.85 1</ambient><diffuse>0.9 0.9 0.85 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- Start wall -->
+    <model name="main_wall_start">
+      <static>true</static>
+      <pose>-10 0 1 0 0 0</pose>
+      <link name="link">
+        <collision name="collision"><geometry><box><size>0.2 8.2 2</size></box></geometry></collision>
+        <visual name="visual">
+          <geometry><box><size>0.2 8.2 2</size></box></geometry>
+          <material><ambient>0.9 0.9 0.85 1</ambient><diffuse>0.9 0.9 0.85 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- ========== ROOM 1 (left side) ========== -->
+    <model name="room1_wall_back">
+      <static>true</static>
+      <pose>-5 -9 1 0 0 0</pose>
+      <link name="link">
+        <collision name="collision"><geometry><box><size>6 0.2 2</size></box></geometry></collision>
+        <visual name="visual">
+          <geometry><box><size>6 0.2 2</size></box></geometry>
+          <material><ambient>0.85 0.85 0.9 1</ambient><diffuse>0.85 0.85 0.9 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+
+    <model name="room1_wall_left">
+      <static>true</static>
+      <pose>-8 -6.5 1 0 0 0</pose>
+      <link name="link">
+        <collision name="collision"><geometry><box><size>0.2 5 2</size></box></geometry></collision>
+        <visual name="visual">
+          <geometry><box><size>0.2 5 2</size></box></geometry>
+          <material><ambient>0.85 0.85 0.9 1</ambient><diffuse>0.85 0.85 0.9 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+
+    <model name="room1_wall_right">
+      <static>true</static>
+      <pose>-2 -6.5 1 0 0 0</pose>
+      <link name="link">
+        <collision name="collision"><geometry><box><size>0.2 5 2</size></box></geometry></collision>
+        <visual name="visual">
+          <geometry><box><size>0.2 5 2</size></box></geometry>
+          <material><ambient>0.85 0.85 0.9 1</ambient><diffuse>0.85 0.85 0.9 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- ========== ROOM 2 (right side) ========== -->
+    <model name="room2_wall_back">
+      <static>true</static>
+      <pose>5 9 1 0 0 0</pose>
+      <link name="link">
+        <collision name="collision"><geometry><box><size>6 0.2 2</size></box></geometry></collision>
+        <visual name="visual">
+          <geometry><box><size>6 0.2 2</size></box></geometry>
+          <material><ambient>0.85 0.9 0.85 1</ambient><diffuse>0.85 0.9 0.85 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+
+    <model name="room2_wall_left">
+      <static>true</static>
+      <pose>2 6.5 1 0 0 0</pose>
+      <link name="link">
+        <collision name="collision"><geometry><box><size>0.2 5 2</size></box></geometry></collision>
+        <visual name="visual">
+          <geometry><box><size>0.2 5 2</size></box></geometry>
+          <material><ambient>0.85 0.9 0.85 1</ambient><diffuse>0.85 0.9 0.85 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+
+    <model name="room2_wall_right">
+      <static>true</static>
+      <pose>8 6.5 1 0 0 0</pose>
+      <link name="link">
+        <collision name="collision"><geometry><box><size>0.2 5 2</size></box></geometry></collision>
+        <visual name="visual">
+          <geometry><box><size>0.2 5 2</size></box></geometry>
+          <material><ambient>0.85 0.9 0.85 1</ambient><diffuse>0.85 0.9 0.85 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- ========== OBSTACLES (simulating people/wheelchairs) ========== -->
+    <!-- Person 1 — red, center corridor -->
+    <model name="person_1">
+      <static>true</static>
+      <pose>-2 1 0.4 0 0 0</pose>
+      <link name="link">
+        <collision name="collision"><geometry><cylinder><radius>0.25</radius><length>0.8</length></cylinder></geometry></collision>
+        <visual name="visual">
+          <geometry><cylinder><radius>0.25</radius><length>0.8</length></cylinder></geometry>
+          <material><ambient>0.9 0.1 0.1 1</ambient><diffuse>0.9 0.1 0.1 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- Person 2 — orange, left side -->
+    <model name="person_2">
+      <static>true</static>
+      <pose>2 -2 0.4 0 0 0</pose>
+      <link name="link">
+        <collision name="collision"><geometry><cylinder><radius>0.25</radius><length>0.8</length></cylinder></geometry></collision>
+        <visual name="visual">
+          <geometry><cylinder><radius>0.25</radius><length>0.8</length></cylinder></geometry>
+          <material><ambient>0.9 0.5 0.1 1</ambient><diffuse>0.9 0.5 0.1 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- Person 3 — red, far end -->
+    <model name="person_3">
+      <static>true</static>
+      <pose>6 1.5 0.4 0 0 0</pose>
+      <link name="link">
+        <collision name="collision"><geometry><cylinder><radius>0.25</radius><length>0.8</length></cylinder></geometry></collision>
+        <visual name="visual">
+          <geometry><cylinder><radius>0.25</radius><length>0.8</length></cylinder></geometry>
+          <material><ambient>0.9 0.1 0.1 1</ambient><diffuse>0.9 0.1 0.1 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- Wheelchair/trolley obstacle -->
+    <model name="trolley_1">
+      <static>true</static>
+      <pose>4 -2.5 0.3 0 0 0</pose>
+      <link name="link">
+        <collision name="collision"><geometry><box><size>0.6 0.4 0.6</size></box></geometry></collision>
+        <visual name="visual">
+          <geometry><box><size>0.6 0.4 0.6</size></box></geometry>
+          <material><ambient>0.2 0.2 0.8 1</ambient><diffuse>0.2 0.2 0.8 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- Bench against wall -->
+    <model name="bench_1">
+      <static>true</static>
+      <pose>-6 3.2 0.25 0 0 0</pose>
+      <link name="link">
+        <collision name="collision"><geometry><box><size>1.5 0.4 0.5</size></box></geometry></collision>
+        <visual name="visual">
+          <geometry><box><size>1.5 0.4 0.5</size></box></geometry>
+          <material><ambient>0.6 0.4 0.2 1</ambient><diffuse>0.6 0.4 0.2 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- Medical cart -->
+    <model name="cart_1">
+      <static>true</static>
+      <pose>0 -3.2 0.4 0 0 0</pose>
+      <link name="link">
+        <collision name="collision"><geometry><box><size>0.5 0.5 0.8</size></box></geometry></collision>
+        <visual name="visual">
+          <geometry><box><size>0.5 0.5 0.8</size></box></geometry>
+          <material><ambient>0.8 0.8 0.8 1</ambient><diffuse>0.8 0.8 0.8 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- ========== GOAL MARKER (green cylinder at end) ========== -->
+    <model name="goal_marker">
+      <static>true</static>
+      <pose>8 0 0.05 0 0 0</pose>
+      <link name="link">
+        <collision name="collision"><geometry><cylinder><radius>0.3</radius><length>0.1</length></cylinder></geometry></collision>
+        <visual name="visual">
+          <geometry><cylinder><radius>0.3</radius><length>0.1</length></cylinder></geometry>
+          <material><ambient>0.1 0.9 0.1 1</ambient><diffuse>0.1 0.9 0.1 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- ========== ROBOT ========== -->
+    <include>
+      <uri>file:///home/prasun/ros2_ws/src/social_nav/models/robot.sdf</uri>
+      <name>ackermann_robot</name>
+      <pose>-8 0 0.1 0 0 0</pose>
+    </include>
+
+  </world>
+</sdf>

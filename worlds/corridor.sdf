@@ -1,0 +1,149 @@
+<?xml version="1.0" ?>
+<sdf version="1.8">
+  <world name="corridor">
+    <plugin filename="gz-sim-physics-system" name="gz::sim::systems::Physics"/>
+    <plugin filename="gz-sim-scene-broadcaster-system" name="gz::sim::systems::SceneBroadcaster"/>
+    <plugin filename="gz-sim-user-commands-system" name="gz::sim::systems::UserCommands"/>
+    <plugin filename="gz-sim-sensors-system" name="gz::sim::systems::Sensors">
+      <render_engine>ogre</render_engine>
+    </plugin>
+    <scene>
+      <ambient>1.0 1.0 1.0 1.0</ambient>
+      <background>0.5 0.7 0.9 1.0</background>
+      <shadows>false</shadows>
+    </scene>
+    <light type="directional" name="sun">
+      <cast_shadows>false</cast_shadows>
+      <pose>0 0 10 0 0 0</pose>
+      <diffuse>1.0 1.0 1.0 1</diffuse>
+      <specular>0.5 0.5 0.5 1</specular>
+      <direction>0 0 -1</direction>
+    </light>
+    <model name="ground_plane">
+      <static>true</static>
+      <link name="link">
+        <collision name="collision">
+          <geometry><plane><normal>0 0 1</normal><size>20 20</size></plane></geometry>
+        </collision>
+        <visual name="visual">
+          <geometry><plane><normal>0 0 1</normal><size>20 20</size></plane></geometry>
+          <material><ambient>0.9 0.9 0.9 1</ambient><diffuse>0.9 0.9 0.9 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+    <model name="wall_left">
+      <static>true</static>
+      <pose>0 -3 0.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry><box><size>10 0.2 1</size></box></geometry>
+        </collision>
+        <visual name="visual">
+          <geometry><box><size>10 0.2 1</size></box></geometry>
+          <material><ambient>0.3 0.3 0.9 1</ambient><diffuse>0.3 0.3 0.9 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+    <model name="wall_right">
+      <static>true</static>
+      <pose>0 3 0.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry><box><size>10 0.2 1</size></box></geometry>
+        </collision>
+        <visual name="visual">
+          <geometry><box><size>10 0.2 1</size></box></geometry>
+          <material><ambient>0.3 0.3 0.9 1</ambient><diffuse>0.3 0.3 0.9 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+    <model name="wall_end">
+      <static>true</static>
+      <pose>5 0 0.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry><box><size>0.2 6.2 1</size></box></geometry>
+        </collision>
+        <visual name="visual">
+          <geometry><box><size>0.2 6.2 1</size></box></geometry>
+          <material><ambient>0.3 0.3 0.9 1</ambient><diffuse>0.3 0.3 0.9 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+    <model name="obstacle_1">
+      <static>true</static>
+      <pose>2 1 0.25 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry><box><size>0.5 0.5 0.5</size></box></geometry>
+        </collision>
+        <visual name="visual">
+          <geometry><box><size>0.5 0.5 0.5</size></box></geometry>
+          <material><ambient>0.9 0.1 0.1 1</ambient><diffuse>0.9 0.1 0.1 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+    <model name="robot" canonical_link="chassis">
+      <pose>-4 0 0.08 0 0 0</pose>
+      <link name="chassis">
+        <inertial><mass>1.0</mass></inertial>
+        <visual name="visual">
+          <geometry><box><size>0.4 0.3 0.1</size></box></geometry>
+          <material><ambient>0.1 0.9 0.1 1</ambient><diffuse>0.1 0.9 0.1 1</diffuse></material>
+        </visual>
+        <collision name="collision">
+          <geometry><box><size>0.4 0.3 0.1</size></box></geometry>
+        </collision>
+        <sensor name="camera" type="camera">
+          <pose>0.21 0 0.05 0 0 0</pose>
+          <camera>
+            <horizontal_fov>1.047</horizontal_fov>
+            <image><width>320</width><height>240</height><format>R8G8B8</format></image>
+            <clip><near>0.1</near><far>20</far></clip>
+          </camera>
+          <always_on>true</always_on>
+          <update_rate>10</update_rate>
+          <visualize>true</visualize>
+          <topic>/camera/image</topic>
+        </sensor>
+      </link>
+      <link name="left_wheel">
+        <pose>0 0.17 0 0 0 0</pose>
+        <inertial><mass>0.1</mass></inertial>
+        <visual name="visual">
+          <geometry><cylinder><radius>0.08</radius><length>0.04</length></cylinder></geometry>
+          <material><ambient>0.1 0.1 0.1 1</ambient><diffuse>0.1 0.1 0.1 1</diffuse></material>
+        </visual>
+        <collision name="collision">
+          <geometry><cylinder><radius>0.08</radius><length>0.04</length></cylinder></geometry>
+        </collision>
+      </link>
+      <link name="right_wheel">
+        <pose>0 -0.17 0 0 0 0</pose>
+        <inertial><mass>0.1</mass></inertial>
+        <visual name="visual">
+          <geometry><cylinder><radius>0.08</radius><length>0.04</length></cylinder></geometry>
+          <material><ambient>0.1 0.1 0.1 1</ambient><diffuse>0.1 0.1 0.1 1</diffuse></material>
+        </visual>
+        <collision name="collision">
+          <geometry><cylinder><radius>0.08</radius><length>0.04</length></cylinder></geometry>
+        </collision>
+      </link>
+      <joint name="left_wheel_joint" type="revolute">
+        <parent>chassis</parent><child>left_wheel</child>
+        <axis><xyz>0 1 0</xyz></axis>
+      </joint>
+      <joint name="right_wheel_joint" type="revolute">
+        <parent>chassis</parent><child>right_wheel</child>
+        <axis><xyz>0 1 0</xyz></axis>
+      </joint>
+      <plugin filename="gz-sim-diff-drive-system" name="gz::sim::systems::DiffDrive">
+        <left_joint>left_wheel_joint</left_joint>
+        <right_joint>right_wheel_joint</right_joint>
+        <wheel_separation>0.34</wheel_separation>
+        <wheel_radius>0.08</wheel_radius>
+        <topic>/cmd_vel</topic>
+      </plugin>
+    </model>
+  </world>
+</sdf>
