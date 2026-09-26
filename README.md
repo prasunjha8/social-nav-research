@@ -1,43 +1,112 @@
-
 # Vision-Guided Socially Aware Navigation for Assistive Mobility
 
-## Research Project
-A vision-based RL navigation agent for assistive mobility robots in crowded indoor environments.
-No LiDAR. No depth sensors. Camera only.
+Camera-only navigation for assistive mobility robots in crowded indoor environments. The project studies whether visual scene semantics derived from a vision-language model (VLM) can improve socially aware navigation compared with a reactive PPO policy using camera/OpenCV features alone. No LiDAR or depth sensor is used.
+
+## Research Question
+
+Can VLM-derived scene understanding improve social navigation quality in a simulated hospital corridor?
+
+The headline outcome is social navigation quality: proxemics violations, path legibility, collision rate, and the time-to-goal trade-off. VLM-derived semantics are the proposed method, supplied to the policy as observation features or used for reward shaping. The required baseline is PPO trained on raw camera/OpenCV features without VLM input; a run without moving pedestrians does not count as this baseline.
 
 ## Stack
-- ROS 2 Humble
-- Gazebo Ignition Fortress
-- Stable-Baselines3 (PPO)
-- OpenCV
-- Python 3.10
 
-## Setup
-```bash
-# Install dependencies
-sudo apt install -y ros-humble-ros-gz-sim ros-humble-ros-gz-bridge ros-humble-ros-gz-sim-demos
-pip install "numpy<2" opencv-python stable-baselines3 gymnasium tensorboard
+- ROS 2 Humble and Gazebo Ignition Fortress
+- Python 3.10, Gymnasium, Stable-Baselines3 PPO
+- OpenCV; camera-only perception
+- RVO2 for ORCA pedestrian control
 
-# Source ROS
-source /opt/ros/humble/setup.bash
+## Repository Layout
 
-# Launch simulation
-ros2 launch ros_gz_sim gz_sim.launch.py gz_args:="-r worlds/hospital_corridor.sdf"
+```text
+launch/       ROS launch configuration
+models/       robot SDF/URDF models
+scripts/      ORCA pedestrian node, hazard detector, and RL training environment
+worlds/       Gazebo worlds, including hospital_corridor.sdf
 ```
 
-## Structure
-social_nav/
-├── worlds/          # Gazebo SDF world files
-├── scripts/         # Python ROS nodes and RL training
-├── models/          # Robot URDF/SDF files
-├── results/         # Training plots and metrics
-└── docs/            # Paper notes and references
-## Progress
-- [x] Gazebo environment with hospital corridor
-- [x] Ackermann robot with camera
-- [x] OpenCV hazard detection pipeline
-- [x] Gymnasium RL environment
-- [ ] PPO training complete
-- [ ] Benchmark vs Nav2
-- [ ] Paper writing
-EOF
+## Setup
+
+Install ROS/Gazebo bridge packages once, then install the Python dependencies in the Python environment used with ROS 2:
+
+```bash
+sudo apt install -y ros-humble-ros-gz-sim ros-humble-ros-gz-bridge \
+  ros-humble-ros-gz-sim-demos ros-humble-tf2-msgs
+python3 -m pip install "numpy<2" opencv-python stable-baselines3 gymnasium tensorboard
+```
+
+The ORCA node also requires `rvo2`. Its source/build instructions are in the docstring at the top of `scripts/orca_pedestrian_node.py`; it is not installed by the command above. Check the Python environment before starting:
+
+```bash
+python3 -c 'import rclpy, rvo2; from tf2_msgs.msg import TFMessage; print("ROS, RVO2, and TF dependencies are available")'
+```
+
+## Start The Pedestrian Simulation
+
+Run each numbered step in a separate terminal. Source ROS 2 in every terminal. These commands start Gazebo and the two ORCA-controlled pedestrians; the complete robot-camera bridge and training workflow are not yet wired into one launch command.
+
+1. Start the world:
+
+   ```bash
+   cd ~/social-nav-research
+   source /opt/ros/humble/setup.bash
+   ros2 launch ros_gz_sim gz_sim.launch.py gz_args:="-r worlds/hospital_corridor.sdf"
+   ```
+
+2. Start the pedestrian command bridges and Gazebo dynamic-pose bridge:
+
+   ```bash
+   cd ~/social-nav-research
+   source /opt/ros/humble/setup.bash
+   ros2 run ros_gz_bridge parameter_bridge \
+     '/model/person_1/cmd_vel@geometry_msgs/msg/Twist@ignition.msgs.Twist' \
+     '/model/person_2/cmd_vel@geometry_msgs/msg/Twist@ignition.msgs.Twist' \
+     '/world/hospital_corridor/dynamic_pose/info@tf2_msgs/msg/TFMessage[ignition.msgs.Pose_V'
+   ```
+
+3. Start the ORCA node:
+
+   ```bash
+   cd ~/social-nav-research
+   source /opt/ros/humble/setup.bash
+   python3 scripts/orca_pedestrian_node.py
+   ```
+
+4. To inspect the pose topic, run this in another sourced terminal:
+
+   ```bash
+   ros2 topic echo /world/hospital_corridor/dynamic_pose/info
+   ```
+
+   The observed `child_frame_id` values for the pedestrians are `person_1` and `person_2`. After a clean start, check that both remain upright and move as expected. Stop the processes with Ctrl+C in their respective terminals.
+
+## Current Status
+
+- Hospital corridor world, Ackermann robot model, and camera-based hazard-detection prototype are present.
+- A Gymnasium/PPO training prototype is present; a valid moving-pedestrian baseline has not yet been trained.
+- The ORCA node controls `person_1` and `person_2`, samples an episode-persistent responsiveness flag per pedestrian, and includes the robot in that pedestrian's ORCA calculation when responsive.
+- The node subscribes to `/world/hospital_corridor/dynamic_pose/info`; observed frame names match its lookup, and Gazebo poses replace dead-reckoned positions after the first message.
+- The pedestrian command and pose bridges have been exercised from the command line. `launch/social_nav.launch.py` currently includes only the two command bridges, not the dynamic-pose bridge or robot/camera bridges.
+- A captured pose showed `person_2` with a tilted orientation. A clean-restart test is still needed to determine whether tipping recurs.
+- Rooms 1 and 2 remain sealed. `person_3` is currently static; the recommendation is to keep it static for now, with two ORCA-driven pedestrians and one standing obstacle.
+
+**Checkout note:** The current `worlds/hospital_corridor.sdf` in this workspace does not yet reflect all SDF fixes described in the project notes: it still has a collision on `goal_marker`, uses an absolute `file://` URI for `models/robot.sdf`, and retains the `person_3` inertial block. Reconcile and validate these changes in this checkout before relying on them or treating the world as portable.
+
+## Next Steps
+
+1. Fully restart Gazebo and run the startup sequence above. Confirm both pedestrians stay upright and move; do not change their physics based only on the one tilted-pose sample.
+2. If tipping recurs, inspect the pose and simulation logs, then test the proposed `<kinematic>true</kinematic>` pedestrian-link change. Increased x/y rotational inertia is an alternative. Re-run the clean-start test after any physics edit.
+3. Reconcile the noted SDF changes with the workspace copy and test the robot model URI from a clean launch.
+4. Keep `person_3` static for the first baseline unless the experiment design changes; decide separately whether to open the side rooms.
+5. Finish geometric visibility handling and episode-reset behavior for the per-pedestrian responsiveness model, then port the H2INT-style reward terms and metric logging into the Gymnasium environment.
+6. Train and evaluate the PPO baseline with camera/OpenCV features and moving, partially responsive pedestrians. Only after that baseline is reproducible, add VLM-derived semantics and compare the social-navigation metrics.
+7. Benchmark against Nav2 and write up the results.
+
+## Research Reference
+
+Ao Shen et al., "Human-Human & Human-Robot Interaction Transformer (H2INT) for Robot Navigation in Dense and Uncertain Crowds," [arXiv:2609.05300](https://arxiv.org/abs/2609.05300).
+
+Use this work as a source for the ORCA-plus-responsiveness formulation, reward template (Eqs. 5-7), and evaluation metrics. Do not attempt to extend its architecture: its observations are relative 2D positions, while this project focuses on camera-only perception and VLM-derived scene understanding.
+
+## License and Third-Party Material
+
+Original project code, models, worlds, and documentation are licensed under the MIT License; see [LICENSE](LICENSE). This does not relicense third-party software or research material. The ORCA implementation is provided by the separately installed [Python-RVO2 project](https://github.com/sybrenstuvel/Python-RVO2), which is Apache-2.0 licensed. The H2INT paper remains subject to its own terms; cite the arXiv page rather than redistributing the downloaded PDF unless its applicable license explicitly permits that.
