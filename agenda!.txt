@@ -1,0 +1,4 @@
+Pedestrian agents in Gazebo — get moving human actors into hospital_corridor.sdf. Gazebo Ignition Fortress supports actor animations with waypoint trajectories; simplest version is a couple of scripted actors walking a fixed path down the corridor.
+Define social-nav metrics — proxemics violation distance (e.g. <1.2m = personal space breach), path legibility, collision rate. Needs to exist before reward shaping.
+Baseline PPO — retrain end-to-end with pedestrians present, using only your current OpenCV/camera features. This is your real Phase 1 checkpoint.
+VLM-guided version — layer semantic scene understanding on top, compare against the baseline.

@@ -92,7 +92,7 @@
     </model>
 
     <include>
-      <uri>file:///home/prasun/ros2_ws/src/social_nav/models/robot.sdf</uri>
+      <uri>file:///home/roboticslab/social-nav-research/models/robot.sdf</uri>
       <name>ackermann_robot</name>
       <pose>-4 0 0.1 0 0 0</pose>
     </include>

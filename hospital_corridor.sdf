@@ -90,7 +90,10 @@
       </link>
     </model>
 
-    <!-- ========== ROOM 1 (left side) ========== -->
+    <!-- ========== ROOM 1 (left side) ==========
+         NOTE: sealed, no doorway cut into main_wall_left yet.
+         Left as-is pending a decision on whether these rooms should
+         be reachable. See project notes. -->
     <model name="room1_wall_back">
       <static>true</static>
       <pose>-5 -9 1 0 0 0</pose>
@@ -173,18 +176,17 @@
       <pose>-2 1 0.4 0 0 0</pose>
       <link name="link">
         <inertial>
-        <mass>70</mass>
-        <inertia>
-          <ixx>3.90</ixx><iyy>3.90</iyy><izz>2.19</izz>
-          <ixy>0</ixy><ixz>0</ixz><iyz>0</iyz>
-        </inertia>
+          <mass>70</mass>
+          <inertia>
+            <ixx>3.90</ixx><iyy>3.90</iyy><izz>2.19</izz>
+            <ixy>0</ixy><ixz>0</ixz><iyz>0</iyz>
+          </inertia>
         </inertial>
         <collision name="collision"><geometry><cylinder><radius>0.25</radius><length>0.8</length></cylinder></geometry></collision>
         <visual name="visual">
           <geometry><cylinder><radius>0.25</radius><length>0.8</length></cylinder></geometry>
           <material><ambient>0.9 0.1 0.1 1</ambient><diffuse>0.9 0.1 0.1 1</diffuse></material>
         </visual>
-        
       </link>
     </model>
 
@@ -195,13 +197,13 @@
       </plugin>
       <pose>2 -2 0.4 0 0 0</pose>
       <link name="link">
-          <inertial>
-            <mass>70</mass>
-            <inertia>
-              <ixx>3.90</ixx><iyy>3.90</iyy><izz>2.19</izz>
-              <ixy>0</ixy><ixz>0</ixz><iyz>0</iyz>
-            </inertia>
-          </inertial>
+        <inertial>
+          <mass>70</mass>
+          <inertia>
+            <ixx>3.90</ixx><iyy>3.90</iyy><izz>2.19</izz>
+            <ixy>0</ixy><ixz>0</ixz><iyz>0</iyz>
+          </inertia>
+        </inertial>
         <collision name="collision"><geometry><cylinder><radius>0.25</radius><length>0.8</length></cylinder></geometry></collision>
         <visual name="visual">
           <geometry><cylinder><radius>0.25</radius><length>0.8</length></cylinder></geometry>
@@ -210,19 +212,13 @@
       </link>
     </model>
 
-    <!-- Person 3 — red, far end -->
+    <!-- Person 3 — red, far end. Static: inertial block intentionally
+         omitted since Gazebo ignores it on static links. If this pedestrian
+         becomes dynamic later, add the same inertial block as person_1/2. -->
     <model name="person_3">
       <static>true</static>
       <pose>6 1.5 0.4 0 0 0</pose>
       <link name="link">
-        
-            <inertial>
-              <mass>70</mass>
-              <inertia>
-                <ixx>3.90</ixx><iyy>3.90</iyy><izz>2.19</izz>
-                <ixy>0</ixy><ixz>0</ixz><iyz>0</iyz>
-              </inertia>
-            </inertial>
         <collision name="collision"><geometry><cylinder><radius>0.25</radius><length>0.8</length></cylinder></geometry></collision>
         <visual name="visual">
           <geometry><cylinder><radius>0.25</radius><length>0.8</length></cylinder></geometry>
@@ -270,12 +266,14 @@
       </link>
     </model>
 
-    <!-- ========== GOAL MARKER (green cylinder at end) ========== -->
+    <!-- ========== GOAL MARKER (green cylinder at end) ==========-->
+         
+        <!-- ejected by the physics solver. -->
+
     <model name="goal_marker">
       <static>true</static>
       <pose>8 0 0.05 0 0 0</pose>
       <link name="link">
-        <collision name="collision"><geometry><cylinder><radius>0.3</radius><length>0.1</length></cylinder></geometry></collision>
         <visual name="visual">
           <geometry><cylinder><radius>0.3</radius><length>0.1</length></cylinder></geometry>
           <material><ambient>0.1 0.9 0.1 1</ambient><diffuse>0.1 0.9 0.1 1</diffuse></material>
@@ -283,9 +281,14 @@
       </link>
     </model>
 
-    <!-- ========== ROBOT ========== -->
+    <!-- ========== ROBOT ==========
+         Path changed from an absolute /home/roboticslab/... URI to a path
+         relative to this world file's own directory (worlds/ -> ../models/).
+         The absolute path only worked on this one machine under this one
+         username; it would break for anyone else who clones the repo, or
+         if the repo is ever moved. -->
     <include>
-      <uri>file:///home/roboticslab/social-nav-research/models/robot.sdf</uri>
+      <uri>../models/robot.sdf</uri>
       <name>ackermann_robot</name>
       <pose>-8 0 0.1 0 0 0</pose>
     </include>
