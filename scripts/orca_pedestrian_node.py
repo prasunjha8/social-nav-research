@@ -39,6 +39,33 @@ TIMESTEP = 0.1          # 10 Hz control loop
 MEAN_RESPONSIVENESS = 0.6   # rho_resp, H2INT Eq. 3
 GOAL_TOLERANCE = 0.4
 
+# Static obstacle footprints, computed from hospital_corridor.sdf's actual
+# pose/size values (box center +/- half-extents in x/y, since RVO2 obstacles
+# are 2D). Vertices ordered counter-clockwise, as RVO2 requires.
+# NOTE: keep this in sync manually if the SDF geometry changes -- there's no
+# automated link between the two files.
+def _rect_obstacle(cx, cy, size_x, size_y):
+    hx, hy = size_x / 2.0, size_y / 2.0
+    return [
+        (cx - hx, cy - hy),
+        (cx + hx, cy - hy),
+        (cx + hx, cy + hy),
+        (cx - hx, cy + hy),
+    ]
+
+STATIC_OBSTACLES = [
+    _rect_obstacle(0, -4, 20, 0.2),    # main_wall_left
+    _rect_obstacle(0, 4, 20, 0.2),     # main_wall_right
+    _rect_obstacle(10, 0, 0.2, 8.2),   # main_wall_end
+    _rect_obstacle(-10, 0, 0.2, 8.2),  # main_wall_start
+    _rect_obstacle(4, -2.5, 0.6, 0.4),   # trolley_1
+    _rect_obstacle(-6, 3.2, 1.5, 0.4),   # bench_1
+    _rect_obstacle(0, -3.2, 0.5, 0.5),   # cart_1
+    # person_3 is a static pedestrian placeholder -- treat it as an obstacle
+    # too, so moving pedestrians route around it instead of walking through:
+    _rect_obstacle(6, 1.5, 0.5, 0.5),
+]
+
 
 class Pedestrian:
     def __init__(self, pid: int):
@@ -197,6 +224,14 @@ class OrcaPedestrianNode(Node):
             # speed since we don't model the robot's own avoidance intent here,
             # just its current position as something to avoid.
             sim.addAgent(self.robot_pos, 3.0, 5, 2.0, 2.0, ROBOT_RADIUS, 0.01, (0.0, 0.0))
+
+        # Register static room geometry (walls, furniture, person_3) so
+        # pedestrians route around it instead of walking straight through --
+        # previously missing entirely, which is why person_2 walked into
+        # trolley_1 and stopped/toppled instead of avoiding it.
+        for verts in STATIC_OBSTACLES:
+            sim.addObstacle(verts)
+        sim.processObstacles()
 
         goal_dx = ped.goal[0] - ped.pos[0]
         goal_dy = ped.goal[1] - ped.pos[1]

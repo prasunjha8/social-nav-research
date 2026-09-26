@@ -85,21 +85,20 @@ Run each numbered step in a separate terminal. Source ROS 2 in every terminal. T
 - A Gymnasium/PPO training prototype is present; a valid moving-pedestrian baseline has not yet been trained.
 - The ORCA node controls `person_1` and `person_2`, samples an episode-persistent responsiveness flag per pedestrian, and includes the robot in that pedestrian's ORCA calculation when responsive.
 - The node subscribes to `/world/hospital_corridor/dynamic_pose/info`; observed frame names match its lookup, and Gazebo poses replace dead-reckoned positions after the first message.
+- ORCA now registers 2D footprints for the main corridor walls, trolley, bench, cart, and static `person_3`; these footprints are manually mirrored from the SDF and must be kept synchronized if the world geometry changes.
+- Both dynamic pedestrian links are configured as kinematic. The latest report says pedestrians routed around static furniture and no longer toppled on contact; a fresh run is still needed after correcting `person_2`'s misplaced kinematic tag in the local SDF.
+- The world file now removes the goal-marker collision, uses the relative `../models/robot.sdf` include, and omits the unused inertial block from static `person_3`.
+- Robot avoidance in ORCA is gated by each pedestrian's episode-level responsiveness flag. Geometric line-of-sight gating is not implemented yet.
 - The pedestrian command and pose bridges have been exercised from the command line. `launch/social_nav.launch.py` currently includes only the two command bridges, not the dynamic-pose bridge or robot/camera bridges.
-- A captured pose showed `person_2` with a tilted orientation. A clean-restart test is still needed to determine whether tipping recurs.
 - Rooms 1 and 2 remain sealed. `person_3` is currently static; the recommendation is to keep it static for now, with two ORCA-driven pedestrians and one standing obstacle.
-
-**Checkout note:** The current `worlds/hospital_corridor.sdf` in this workspace does not yet reflect all SDF fixes described in the project notes: it still has a collision on `goal_marker`, uses an absolute `file://` URI for `models/robot.sdf`, and retains the `person_3` inertial block. Reconcile and validate these changes in this checkout before relying on them or treating the world as portable.
 
 ## Next Steps
 
-1. Fully restart Gazebo and run the startup sequence above. Confirm both pedestrians stay upright and move; do not change their physics based only on the one tilted-pose sample.
-2. If tipping recurs, inspect the pose and simulation logs, then test the proposed `<kinematic>true</kinematic>` pedestrian-link change. Increased x/y rotational inertia is an alternative. Re-run the clean-start test after any physics edit.
-3. Reconcile the noted SDF changes with the workspace copy and test the robot model URI from a clean launch.
-4. Keep `person_3` static for the first baseline unless the experiment design changes; decide separately whether to open the side rooms.
-5. Finish geometric visibility handling and episode-reset behavior for the per-pedestrian responsiveness model, then port the H2INT-style reward terms and metric logging into the Gymnasium environment.
-6. Train and evaluate the PPO baseline with camera/OpenCV features and moving, partially responsive pedestrians. Only after that baseline is reproducible, add VLM-derived semantics and compare the social-navigation metrics.
-7. Benchmark against Nav2 and write up the results.
+1. Fully restart Gazebo and verify both pedestrians stay upright and route around each other, the robot when they are responsive, and the registered static footprints after the `person_2` SDF correction.
+2. Call `/reset_pedestrians` from `SocialNavEnv.reset()` and add geometric line-of-sight gating, so pedestrian positions, goals, and responsiveness reset correctly and robot visibility follows the scenario definition.
+3. Define numeric proxemics thresholds and a path-legibility metric, then implement the H2INT-style reward terms and metric logging.
+4. Train the real PPO baseline end to end with camera/OpenCV observations and moving, partially responsive pedestrians. Previous no-pedestrian convergence does not count as this baseline.
+5. Once the baseline is reproducible, add VLM-derived semantics and compare social-navigation metrics; then benchmark against Nav2 and write up the results.
 
 ## Research Reference
 
