@@ -10,10 +10,11 @@ Use the `2.0.4` release of [open-rmf/rmf_demos](https://github.com/open-rmf/rmf_
 
 ```bash
 source /opt/ros/humble/setup.bash
+source ~/rmf_ws/install/setup.bash
 ros2 launch rmf_demos_gz airport_terminal.launch.xml use_crowdsim:=1
 ```
 
-This project does not install `rmf_demos_gz`; build/install the RMF Humble demo packages using the [upstream installation instructions](https://github.com/open-rmf/rmf). The map package generates the Ignition world and crowd resources during its build. It also downloads model assets into `~/.gazebo/models` unless configured not to, so a successful launch depends on those generated resources and downloaded assets being available.
+The RMF Humble demos are built separately in `~/rmf_ws`; this optional overlay is not part of the repository and does not replace the hospital corridor setup. For a fresh machine, install/build the RMF Humble demo packages using the [upstream installation instructions](https://github.com/open-rmf/rmf). The map package generates the Ignition world and crowd resources during its build. It also downloads model assets into `~/.gazebo/models` unless configured not to, so a successful launch depends on those generated resources and downloaded assets being available.
 
 Record the exact `rmf_demos` commit, build options, crowd configuration, and random seed with every experiment.
 

@@ -24,9 +24,18 @@ scripts/      ORCA pedestrian node, hazard detector, and RL training environment
 worlds/       Gazebo worlds, including hospital_corridor.sdf
 ```
 
-An optional, larger crowd stress-test using Open-RMF's Airport Terminal world
-is documented in [docs/crowded_area_benchmark.md](docs/crowded_area_benchmark.md).
-The hospital corridor remains the controlled baseline environment.
+The hospital corridor remains the controlled baseline environment. A separate,
+optional crowd stress-test uses Open-RMF's Airport Terminal world; it does not
+replace the corridor. See [docs/crowded_area_benchmark.md](docs/crowded_area_benchmark.md).
+
+With the RMF Humble demos built in `~/rmf_ws`, launch the Airport Terminal crowd
+scene from a sourced terminal:
+
+```bash
+source /opt/ros/humble/setup.bash
+source ~/rmf_ws/install/setup.bash
+ros2 launch rmf_demos_gz airport_terminal.launch.xml use_crowdsim:=1
+```
 
 ## Setup
 
