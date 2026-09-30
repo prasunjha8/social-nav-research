@@ -53,6 +53,17 @@ def _rect_obstacle(cx, cy, size_x, size_y):
         (cx - hx, cy + hy),
     ]
 
+
+def _circle_obstacle(cx, cy, radius, vertices=12):
+    return [
+        (
+            cx + radius * math.cos(2.0 * math.pi * index / vertices),
+            cy + radius * math.sin(2.0 * math.pi * index / vertices),
+        )
+        for index in range(vertices)
+    ]
+
+
 STATIC_OBSTACLES = [
     _rect_obstacle(0, -4, 20, 0.2),    # main_wall_left
     _rect_obstacle(0, 4, 20, 0.2),     # main_wall_right
@@ -63,7 +74,7 @@ STATIC_OBSTACLES = [
     _rect_obstacle(0, -3.2, 0.5, 0.5),   # cart_1
     # person_3 is a static pedestrian placeholder -- treat it as an obstacle
     # too, so moving pedestrians route around it instead of walking through:
-    _rect_obstacle(6, 1.5, 0.5, 0.5),
+    _circle_obstacle(6, 1.5, 0.25),
 ]
 
 

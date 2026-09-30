@@ -178,6 +178,7 @@
         <kinematic>true</kinematic>
         <inertial>
           <mass>70</mass>
+          
           <inertia>
             <ixx>3.90</ixx><iyy>3.90</iyy><izz>2.19</izz>
             <ixy>0</ixy><ixz>0</ixz><iyz>0</iyz>
