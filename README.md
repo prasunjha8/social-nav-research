@@ -43,7 +43,8 @@ Install ROS/Gazebo bridge packages once, then install the Python dependencies in
 
 ```bash
 sudo apt install -y ros-humble-ros-gz-sim ros-humble-ros-gz-bridge \
-  ros-humble-ros-gz-sim-demos ros-humble-tf2-msgs
+   ros-humble-ros-gz-sim-demos ros-humble-tf2-msgs \
+   ros-humble-teleop-twist-keyboard
 python3 -m pip install "numpy<2" opencv-python stable-baselines3 gymnasium tensorboard
 ```
 
@@ -84,7 +85,27 @@ Run each numbered step in a separate terminal. Source ROS 2 in every terminal. T
    python3 scripts/orca_pedestrian_node.py
    ```
 
-4. To inspect the pose topic, run this in another sourced terminal:
+4. Start the robot command bridge in another sourced terminal:
+
+   ```bash
+   cd ~/social-nav-research
+   source /opt/ros/humble/setup.bash
+   ros2 run ros_gz_bridge parameter_bridge \
+     '/cmd_vel@geometry_msgs/msg/Twist@ignition.msgs.Twist'
+   ```
+
+5. Start keyboard teleoperation in another sourced terminal:
+
+   ```bash
+   source /opt/ros/humble/setup.bash
+   ros2 run teleop_twist_keyboard teleop_twist_keyboard
+   ```
+
+   Use `i` to drive forward, `,` to reverse, `j`/`l` to steer, and `k` to stop.
+   Manual driving is useful for visual interaction checks and reward exploration;
+   use scripted, repeatable commands for quantitative comparisons.
+
+6. To inspect the pose topic, run this in another sourced terminal:
 
    ```bash
    ros2 topic echo /world/hospital_corridor/dynamic_pose/info

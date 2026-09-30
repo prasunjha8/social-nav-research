@@ -61,6 +61,36 @@
             <size>0.3 0.15 0.07</size>
           </box>
         </geometry>
+        <material>
+          <ambient>0.02 0.08 0.42 1</ambient>
+          <diffuse>0.03 0.16 0.72 1</diffuse>
+          <specular>0.18 0.18 0.2 1</specular>
+        </material>
+      </visual>
+      <visual name='upper_deck_visual'>
+        <pose>0 0 0.04 0 0 0</pose>
+        <geometry>
+          <box>
+            <size>0.24 0.13 0.014</size>
+          </box>
+        </geometry>
+        <material>
+          <ambient>0.08 0.1 0.14 1</ambient>
+          <diffuse>0.12 0.15 0.2 1</diffuse>
+          <specular>0.12 0.12 0.12 1</specular>
+        </material>
+      </visual>
+      <visual name='front_bumper_visual'>
+        <pose>0.154 0 0 0 0 0</pose>
+        <geometry>
+          <box>
+            <size>0.016 0.17 0.04</size>
+          </box>
+        </geometry>
+        <material>
+          <ambient>0.04 0.05 0.06 1</ambient>
+          <diffuse>0.07 0.08 0.09 1</diffuse>
+        </material>
       </visual>
       <visual name='base_link_fixed_joint_lump__camera_link_visual_1'>
         <pose>0.175 0 0.04 0 0.523 0</pose>
@@ -69,6 +99,10 @@
             <size>0.05 0.05 0.03</size>
           </box>
         </geometry>
+        <material>
+          <ambient>0.02 0.45 0.38 1</ambient>
+          <diffuse>0.03 0.72 0.58 1</diffuse>
+        </material>
       </visual>
       <visual name='base_link_fixed_joint_lump__lidar_link_visual_2'>
         <pose>-0.035 0 0.155 0 -0 0</pose>
@@ -78,6 +112,10 @@
             <radius>0.02315</radius>
           </cylinder>
         </geometry>
+        <material>
+          <ambient>0.04 0.04 0.05 1</ambient>
+          <diffuse>0.08 0.08 0.09 1</diffuse>
+        </material>
       </visual>
       <sensor name='camera' type='camera'>
         <topic>/camera/image_raw</topic>
@@ -194,6 +232,14 @@
             <radius>0.05</radius>
           </cylinder>
         </geometry>
+        <surface>
+          <friction>
+            <ode>
+              <mu>0.9</mu>
+              <mu2>0.9</mu2>
+            </ode>
+          </friction>
+        </surface>
       </collision>
       <visual name='front_left_wheel_link_visual'>
         <pose>0 0 0 0 -0 0</pose>
@@ -203,6 +249,10 @@
             <radius>0.05</radius>
           </cylinder>
         </geometry>
+        <material>
+          <ambient>0.025 0.025 0.03 1</ambient>
+          <diffuse>0.05 0.05 0.06 1</diffuse>
+        </material>
       </visual>
     </link>
     <joint name='front_right_steer_joint' type='revolute'>
@@ -278,6 +328,14 @@
             <radius>0.05</radius>
           </cylinder>
         </geometry>
+        <surface>
+          <friction>
+            <ode>
+              <mu>0.9</mu>
+              <mu2>0.9</mu2>
+            </ode>
+          </friction>
+        </surface>
       </collision>
       <visual name='front_right_wheel_link_visual'>
         <pose>0 0 0 0 -0 0</pose>
@@ -287,6 +345,10 @@
             <radius>0.05</radius>
           </cylinder>
         </geometry>
+        <material>
+          <ambient>0.025 0.025 0.03 1</ambient>
+          <diffuse>0.05 0.05 0.06 1</diffuse>
+        </material>
       </visual>
     </link>
     <joint name='rear_left_wheel_joint' type='revolute'>
@@ -329,6 +391,14 @@
             <radius>0.05</radius>
           </cylinder>
         </geometry>
+        <surface>
+          <friction>
+            <ode>
+              <mu>0.9</mu>
+              <mu2>0.9</mu2>
+            </ode>
+          </friction>
+        </surface>
       </collision>
       <visual name='rear_left_wheel_visual'>
         <pose>0 0 0 0 -0 0</pose>
@@ -338,6 +408,10 @@
             <radius>0.05</radius>
           </cylinder>
         </geometry>
+        <material>
+          <ambient>0.025 0.025 0.03 1</ambient>
+          <diffuse>0.05 0.05 0.06 1</diffuse>
+        </material>
       </visual>
     </link>
     <joint name='rear_right_wheel_joint' type='revolute'>
@@ -380,6 +454,14 @@
             <radius>0.05</radius>
           </cylinder>
         </geometry>
+        <surface>
+          <friction>
+            <ode>
+              <mu>0.9</mu>
+              <mu2>0.9</mu2>
+            </ode>
+          </friction>
+        </surface>
       </collision>
       <visual name='rear_right_wheel_visual'>
         <pose>0 0 0 0 -0 0</pose>
@@ -389,6 +471,10 @@
             <radius>0.05</radius>
           </cylinder>
         </geometry>
+        <material>
+          <ambient>0.025 0.025 0.03 1</ambient>
+          <diffuse>0.05 0.05 0.06 1</diffuse>
+        </material>
       </visual>
     </link>
     <static>0</static>
@@ -397,10 +483,10 @@
       <right_joint>rear_right_wheel_joint</right_joint>
       <left_steering_joint>front_left_steer_joint</left_steering_joint>
       <right_steering_joint>front_right_steer_joint</right_steering_joint>
-      <kingpin_width>0.2</kingpin_width>
+      <kingpin_width>0.192</kingpin_width>
       <steering_limit>0.5</steering_limit>
-      <wheel_base>0.3</wheel_base>
-      <wheel_separation>0.2</wheel_separation>
+      <wheel_base>0.257</wheel_base>
+      <wheel_separation>0.192</wheel_separation>
       <wheel_radius>0.05</wheel_radius>
       <topic>/cmd_vel</topic>
     </plugin>
