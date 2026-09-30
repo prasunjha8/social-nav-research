@@ -24,6 +24,10 @@ scripts/      ORCA pedestrian node, hazard detector, and RL training environment
 worlds/       Gazebo worlds, including hospital_corridor.sdf
 ```
 
+An optional, larger crowd stress-test using Open-RMF's Airport Terminal world
+is documented in [docs/crowded_area_benchmark.md](docs/crowded_area_benchmark.md).
+The hospital corridor remains the controlled baseline environment.
+
 ## Setup
 
 Install ROS/Gazebo bridge packages once, then install the Python dependencies in the Python environment used with ROS 2:

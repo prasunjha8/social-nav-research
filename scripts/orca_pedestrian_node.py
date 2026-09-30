@@ -82,6 +82,7 @@ class Pedestrian:
     def __init__(self, pid: int):
         self.id = pid
         self.pos = (0.0, 0.0)
+        self.yaw = 0.0
         self.goal = (0.0, 0.0)
         self.responsive = True   # resampled every episode, held fixed within it
         self.pos_confirmed = False  # True once we've received a real pose from Gazebo
@@ -168,6 +169,11 @@ class OrcaPedestrianNode(Node):
                 continue
             t = transform.transform.translation
             ped.pos = (t.x, t.y)
+            q = transform.transform.rotation
+            ped.yaw = math.atan2(
+                2.0 * (q.w * q.z + q.x * q.y),
+                1.0 - 2.0 * (q.y * q.y + q.z * q.z),
+            )
             ped.pos_confirmed = True
 
     # ---- per-step control ----
@@ -263,8 +269,10 @@ class OrcaPedestrianNode(Node):
 
     def _publish_cmd(self, ped: Pedestrian, vx: float, vy: float):
         msg = Twist()
-        msg.linear.x = vx
-        msg.linear.y = vy
+        cos_yaw = math.cos(ped.yaw)
+        sin_yaw = math.sin(ped.yaw)
+        msg.linear.x = cos_yaw * vx + sin_yaw * vy
+        msg.linear.y = -sin_yaw * vx + cos_yaw * vy
         self.cmd_pubs[ped.id].publish(msg)
 
 
@@ -273,9 +281,12 @@ def main():
     node = OrcaPedestrianNode()
     try:
         rclpy.spin(node)
+    except KeyboardInterrupt:
+        pass
     finally:
         node.destroy_node()
-        rclpy.shutdown()
+        if rclpy.ok():
+            rclpy.shutdown()
 
 
 if __name__ == '__main__':
